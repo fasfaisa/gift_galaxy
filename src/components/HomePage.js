@@ -12,12 +12,10 @@ import cus2 from '../images/cusprod11.jpg';
 import cus3 from '../images/cusprod07.jpg';
 import cus4 from '../images/cusprod08.jpg';
 import cus5 from '../images/cusprod09.jpg';
-import cus6 from '../images/cusprod01.jpg';
 import cus7 from '../images/cusprod02.jpg';
 import cus8 from '../images/cusprod03.jpg';
 import cus9 from '../images/cusprod04.jpg';
 import cus10 from '../images/cusprod05.jpg';
-import cus11 from '../images/5.jpg';
 import Services from './Services.js';
 import Contact from './contact.js';
 
