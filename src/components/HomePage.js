@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import logo from '../images/logo.jpg';
@@ -30,13 +30,18 @@ const GlobalStyle = createGlobalStyle`
     color: #ffffff;
   }
 `;
-
 const HomePage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
   const backgroundImages = [home2, home1];
+  
+  // Create refs for sections
+  const homeRef = useRef(null);
+  const aboutRef = useRef(null);
+  const servicesRef = useRef(null);
+  const contactRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -47,7 +52,7 @@ const HomePage = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setBackgroundIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-    }, 3000); // Change background every 3 seconds
+    }, 3000);
 
     return () => clearInterval(intervalId);
   }, [backgroundImages.length]);
@@ -56,17 +61,25 @@ const HomePage = () => {
     setIsOpen(!isOpen);
   };
 
+  const scrollToSection = (sectionRef) => {
+    if (sectionRef && sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.warn("Section not found or not loaded in the DOM");
+    }
+  };
+  
   return (
     <>
-      <GlobalStyle />
+       <GlobalStyle />
       <Container>
         <Header>
           <Logo src={logo} alt="My Mues" />
           <Nav>
-            <NavItem>HOME</NavItem>
-            <NavItem>ABOUT US</NavItem>
-            <NavItem>SERVICES</NavItem>
-            <NavItem>CONTACT</NavItem>
+            <NavItem onClick={() => scrollToSection(homeRef)}>HOME</NavItem>
+            <NavItem onClick={() => scrollToSection(aboutRef)}>ABOUT US</NavItem>
+            <NavItem onClick={() => scrollToSection(servicesRef)}>SERVICES</NavItem>
+            <NavItem onClick={() => scrollToSection(contactRef)}>CONTACT</NavItem>
             <ShopButton>SHOP</ShopButton>
           </Nav>
           <HamburgerMenu onClick={toggleMenu}>
@@ -76,11 +89,12 @@ const HomePage = () => {
           </HamburgerMenu>
         </Header>
 
+       
         <MobileNav isOpen={isOpen}>
-          <MobileNavItem onClick={toggleMenu}>HOME</MobileNavItem>
-          <MobileNavItem onClick={toggleMenu}>ABOUT US</MobileNavItem>
-          <MobileNavItem onClick={toggleMenu}>SERVICES</MobileNavItem>
-          <MobileNavItem onClick={toggleMenu}>CONTACT</MobileNavItem>
+          <MobileNavItem onClick={() => { toggleMenu(); scrollToSection(homeRef); }}>HOME</MobileNavItem>
+          <MobileNavItem onClick={() => { toggleMenu(); scrollToSection(aboutRef); }}>ABOUT US</MobileNavItem>
+          <MobileNavItem onClick={() => { toggleMenu(); scrollToSection(servicesRef); }}>SERVICES</MobileNavItem>
+          <MobileNavItem onClick={() => { toggleMenu(); scrollToSection(contactRef); }}>CONTACT</MobileNavItem>
           <MobileShopButton onClick={toggleMenu}>SHOP</MobileShopButton>
         </MobileNav>
 
@@ -113,8 +127,8 @@ const HomePage = () => {
             style={{ transform: `translate(${Math.sin(scrollY * 0.02) * 30}px, ${scrollY * 0.35}px)` }}
           />
         </HeroSection>
+        <ContentSection ref={aboutRef}>
 
-        <ContentSection>
   <SectionText>
     EXPLORE OUR <Highlight>Exclusive Gifts</Highlight> COLLECTION<br />
     WHERE EVERY ITEM IS <Highlight>Thoughtfully Curated</Highlight> FOR YOU<br />
@@ -150,9 +164,13 @@ const HomePage = () => {
           <FloatingGridImage src={cus8} alt="Product 5" />
           
         </ImageGrid>
-        
-        <Services />
-        <Contact />
+        <div ref={servicesRef}>
+          <Services />
+        </div>
+       
+        <div ref={contactRef}>
+          <Contact />
+        </div>
       </Container>
     </>
   );
